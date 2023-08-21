@@ -81,7 +81,7 @@ class GeoLocationValidator {
     return distance; // distance in meters
   };
 
-  degree2Radian = (deg: number) => {
+  degree2Radian = (deg: number): number => {
     return deg * (Math.PI / 180);
   };
 
