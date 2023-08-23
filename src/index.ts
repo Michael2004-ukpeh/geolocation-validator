@@ -1,17 +1,24 @@
-import { FetchCoordinatesResult } from './interfaces';
+import axios from 'axios';
+import {
+  Coordinates,
+  FetchCoordinatesResult,
+  ValidationMessage,
+} from './interfaces';
 
-class GeoLocationValidator {
-  private googleMapApi: string;
+export default class GeoLocationValidator {
+  private azureMapApi: string;
   private radiusOfEarth = 6371000; //meters
 
-  constructor(googleMapAPIKey: string) {
-    this.googleMapApi = googleMapAPIKey;
+  constructor(azureMapAPIKey: string) {
+    this.azureMapApi = azureMapAPIKey;
   }
+
   /**
-   * Fetches coordinates using HTML5G Geolocation API
+   * Fetches coordinates using HTML5G Geolocation API on
    */
   fetchCoordinates = (): FetchCoordinatesResult | any => {
     try {
+      let navigator = window.navigator;
       if (navigator) {
         const coordinates = navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -44,30 +51,43 @@ class GeoLocationValidator {
         throw new Error('Geolocation not supported by client application');
       }
     } catch (error: any) {
+      throw error;
+    }
+  };
+
+  /**
+   * using Azure Map services, a physical address can be passed to give its coordinates
+   * @param address - Pass in the physical address of a location to
+   */
+  geoCodeAddress = async (address: string): Promise<Coordinates> => {
+    try {
+      let addressQuerystring = `https://atlas.microsoft.com/search/address/json?subscription-key=${
+        this.azureMapApi
+      }&api-version=1.0&query=${encodeURIComponent(address)}`;
+      let { data } = await axios.get(addressQuerystring);
+
+      let coordinates = data.results[0].position;
+      return {
+        latitude: coordinates.lat,
+        longitude: coordinates.lon,
+      };
+    } catch (error: any) {
       throw error.message;
     }
   };
-  //    Bocker canot find a reliable map service
-  /**
-   *
-   * @param address - Pass in the physical address of a location to
-   */
-  geoCodeAddress = async (address: string) => {};
 
   /**
    * A method to calculate the distance between two geographic points based on latitude and longitude
-   * @param lat1 -  latitude of first coordinate
-   * @param long1 - longitude of second coordinate
-   * @param lat2 - latitude of first coordinate
-   * @param long2 -longitude of second coordinate
-   * @returns The distance between these points
+   * @param coordinates1 - A object/interface containing the longitude and latitude of the point of location
+   * @param coordinates2 - An object/interface containing the longitude and the latittude of the point of reference
+   * @returns The distance between these points in meters
    */
   calculateDistanceBetweenCoordinates = (
-    lat1: number,
-    long1: number,
-    lat2: number,
-    long2: number
+    coordinates1: Coordinates,
+    coordinates2: Coordinates
   ): number => {
+    let { latitude: lat1, longitude: long1 } = coordinates1;
+    let { latitude: lat2, longitude: long2 } = coordinates2;
     let diffLat = this.degree2Radian(lat2 - lat1);
     let diffLong = this.degree2Radian(long2 - long1);
     let a =
@@ -85,5 +105,42 @@ class GeoLocationValidator {
     return deg * (Math.PI / 180);
   };
 
-  validateLocation = () => {};
+  /**
+   * Validation Method to
+   * @param userCoordinates
+   * @param validationPoint
+   * @param range
+   * @returns True or false
+   */
+  validateLocation = async (
+    userCoordinates: Coordinates,
+    validationPoint: Coordinates,
+    range: number
+  ): Promise<ValidationMessage> => {
+    const distanceBetweenUserandValidationPoint =
+      this.calculateDistanceBetweenCoordinates(
+        userCoordinates,
+        validationPoint
+      );
+
+    if (userCoordinates === validationPoint) {
+      return {
+        result: true,
+        message: 'Device Location validated',
+      };
+    } else if (
+      userCoordinates === validationPoint ||
+      distanceBetweenUserandValidationPoint <= range
+    ) {
+      return {
+        result: true,
+        message: 'Device Location validated',
+      };
+    } else {
+      return {
+        result: false,
+        message: 'Device is not presently within the range of validation',
+      };
+    }
+  };
 }

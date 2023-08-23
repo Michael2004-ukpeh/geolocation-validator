@@ -12,3 +12,25 @@ export interface FetchCoordinatesResult {
    */
   altitude: number;
 }
+
+export interface Coordinates {
+  /**
+   * Latitude of Coordinate
+   */
+  latitude: number;
+  /**
+   * Longitude of Coordinate
+   */
+  longitude: number;
+}
+
+export interface ValidationMessage {
+  /**
+   * Status of device geolocation validation
+   */
+  result: boolean;
+  /**
+   * validation message
+   */
+  message: String;
+}
