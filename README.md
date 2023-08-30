@@ -39,4 +39,4 @@ Output:
 }
 ```
 
-For more documentation: Check out the <a href='https://michael2004-ukpeh.github.io/geolocation-validator/'>docs</a>
+**For more documentation: Check out the <a href='https://michael2004-ukpeh.github.io/geolocation-validator/'>docs</a>**
