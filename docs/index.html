@@ -13,6 +13,13 @@
 <div class="tsd-page-title">
 <h2>geolocation-validator</h2></div>
 <div class="tsd-panel tsd-typography"><a id="md:address-based-geolocation-validator" class="tsd-anchor"></a><h1><a href="#md:address-based-geolocation-validator">Address Based Geolocation Validator</a></h1><p>A set of methods created to validate the location of a device from it&#39;s point of validation</p>
+<a id="md:installation" class="tsd-anchor"></a><h2><a href="#md:installation">Installation</a></h2><pre><code class="language-sh"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">geolocation-validator</span><span class="hl-1"> </span><span class="hl-3">--save</span><br/><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">geolocation-validator</span><br/><span class="hl-0">bower</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">geolocation-validator</span><span class="hl-1">  </span><span class="hl-3">--save</span>
+</code><button>Copy</button></pre>
+<a id="md:usage" class="tsd-anchor"></a><h2><a href="#md:usage">Usage</a></h2><pre><code class="language-Javascript"><span class="hl-4">import</span><span class="hl-1"> {</span><span class="hl-5">GeoLocationValidator</span><span class="hl-1">} </span><span class="hl-4">from</span><span class="hl-1"> </span><span class="hl-2">&#39;geolocation-validatior&#39;</span><br/><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-6">geoLocator</span><span class="hl-1"> =  </span><span class="hl-3">new</span><span class="hl-1"> </span><span class="hl-0">GeoLocationValidator</span><span class="hl-1">();</span><br/><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-6">myCoordinates</span><span class="hl-1">:</span><span class="hl-7">Coordinates</span><span class="hl-1"> =  {</span><br/><span class="hl-1">    </span><span class="hl-5">latitude:</span><span class="hl-1"> </span><span class="hl-8">4.825979675576107</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-5">longitude:</span><span class="hl-1"> </span><span class="hl-8">7.05675985088703</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-6">pointOfValidaton</span><span class="hl-1">: </span><span class="hl-7">Coordinates</span><span class="hl-1"> =  {</span><br/><span class="hl-1">    </span><span class="hl-5">latitude:</span><span class="hl-8">7.05675985088703</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-5">longitude:</span><span class="hl-8">4.825979675576107</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-6">validated</span><span class="hl-1"> =  </span><span class="hl-4">await</span><span class="hl-1"> </span><span class="hl-5">geoLocator</span><span class="hl-1">.</span><span class="hl-0">validateLocation</span><span class="hl-1">(</span><span class="hl-5">myCoordinates</span><span class="hl-1">, </span><span class="hl-5">pointofValidation</span><span class="hl-1">, </span><span class="hl-8">0</span><span class="hl-1">);</span><br/>
+</code><button>Copy</button></pre>
+<pre><code class="language-sh"><span class="hl-0">Output:</span><br/><span class="hl-1"> {</span><br/><span class="hl-1">   </span><span class="hl-0">result:false</span><br/><span class="hl-1">   </span><span class="hl-0">message:</span><span class="hl-1"> </span><span class="hl-2">&#39;Device is not presently within the range of validation&#39;</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>For more documentation: Check out the <a href='https://michael2004-ukpeh.github.io/geolocation-validator/'>docs</a></p>
 </div></div>
 <div class="col-sidebar">
 <div class="page-menu">
@@ -35,7 +42,11 @@
 <ul>
 <li>
 <ul>
-<li><a href="#md:address-based-geolocation-validator"><span>Address <wbr/>Based <wbr/>Geolocation <wbr/>Validator</span></a></li></ul></li></ul></div></details></div>
+<li><a href="#md:address-based-geolocation-validator"><span>Address <wbr/>Based <wbr/>Geolocation <wbr/>Validator</span></a></li>
+<li>
+<ul>
+<li><a href="#md:installation"><span>Installation</span></a></li>
+<li><a href="#md:usage"><span>Usage</span></a></li></ul></li></ul></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)"></path></g></svg><span>geolocation-<wbr/>validator</span></a>
 <ul class="tsd-small-nested-navigation">

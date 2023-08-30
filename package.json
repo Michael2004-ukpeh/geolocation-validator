@@ -1,8 +1,20 @@
 {
   "name": "geolocation-validator",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "A set of methods created to validate the location of a device from it's point of validation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Michael2004-ukpeh/geolocation-validator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Michael2004-ukpeh/geolocation-validator.git/issues"
+  },
+  "homepage": "https://michael2004-ukpeh.github.io/geolocation-validator/",
   "scripts": {
     "build": "tsc -p ./",
     "test": "ts-mocha -p ./tsconfig.json -t 100000 tests/**/*.ts",
