@@ -1,22 +1,75 @@
 import axios from 'axios';
+import IPData from 'ipdata';
+import express from 'express';
 import {
   Coordinates,
   FetchCoordinatesResult,
   ValidationMessage,
 } from './interfaces';
 
-export default class GeoLocationValidator {
-  private azureMapApi: string;
+/**
+ * A geolocation validation middleware to based on Ip address
+ */
+export class GeoLocationValidator {
   private radiusOfEarth = 6371000; //meters
+  /**
+   * A geolocation validation middleware to based on Ip address
+   */
+  /**
+   * Fetches the geographic coordinates of device based on Ip
+   * @param ipDataAPIKey - Check out https://ipdata.co/
+   * @param abstractAPIKey - check out https://www.abstractapi.com/api/ip-geolocation-api
+   * @returns - Geographic coordinates of device
+   */
+  fetchIpCoordinatesClient = async (
+    ipDataAPIKey: string,
+    abstractAPIKey: string
+  ): Promise<Coordinates> => {
+    try {
+      let { data } = await axios.get(
+        `https://ipgeolocation.abstractapi.com/v1/?api_key=${
+          abstractAPIKey as string
+        }`
+      );
+      let ipAddress = data.ip_address;
 
-  constructor(azureMapAPIKey: string) {
-    this.azureMapApi = azureMapAPIKey;
-  }
+      const ipData = new IPData(ipDataAPIKey);
+      let geo = await ipData.lookup(ipAddress);
+      let { latitude, longitude } = geo;
+
+      return {
+        latitude,
+        longitude,
+      };
+    } catch (error: any) {
+      throw error.message;
+    }
+  };
 
   /**
-   * Fetches coordinates using HTML5G Geolocation API on
+   * Fetches the ip address of the client making the HTTP request
+   * @param req - The req object of the HTTP request
+   * @param ipDataAPIKey -  Check out https://ipdata.co/
+   * @returns - Geographic coordinates of device based on http request to be validated on backend application
    */
-  fetchCoordinates = (): FetchCoordinatesResult | any => {
+  fetchIpBasedReq = async (req: express.Request, ipDataAPIKey: string) => {
+    try {
+      const ipAddress = req.socket.remoteAddress;
+      const ipData = new IPData(ipDataAPIKey);
+      let geo = await ipData.lookup(ipAddress);
+      let { latitude, longitude } = geo;
+
+      return {
+        latitude,
+        longitude,
+      };
+    } catch (error: any) {}
+  };
+
+  /**
+   * Fetches coordinates using IP Geolocation API on
+   */
+  fetchCoordinatesHtml5Geolocation = (): FetchCoordinatesResult | any => {
     try {
       let navigator = window.navigator;
       if (navigator) {
@@ -57,16 +110,43 @@ export default class GeoLocationValidator {
 
   /**
    * using Azure Map services, a physical address can be passed to give its coordinates
-   * @param address - Pass in the physical address of a location to
+   * @param address - Pass in the physical address of a location to be gp
    */
-  geoCodeAddress = async (address: string): Promise<Coordinates> => {
+  geoCodeAddressAzure = async (
+    address: string,
+    azureMapAPIKey: string
+  ): Promise<Coordinates> => {
     try {
-      let addressQuerystring = `https://atlas.microsoft.com/search/address/json?subscription-key=${
-        this.azureMapApi
-      }&api-version=1.0&query=${encodeURIComponent(address)}`;
+      let addressQuerystring = `https://atlas.microsoft.com/fuzzy/address/json?subscription-key=${azureMapAPIKey}&api-version=1.0&query=${encodeURIComponent(
+        address
+      )}`;
       let { data } = await axios.get(addressQuerystring);
 
       let coordinates = data.results[0].position;
+      return {
+        latitude: coordinates.lat,
+        longitude: coordinates.lon,
+      };
+    } catch (error: any) {
+      throw error.message;
+    }
+  };
+  /**
+   * using Google Map services, a physical address can be passed to give its coordinates
+   * @param address - Pass in the physical address of a location to be geocoded
+   * @param googleMapAPIKey  - API key of Google Geocoding API
+   */
+  geoCodeAddressGoogle = async (
+    address: string,
+    googleMapAPIKey: string
+  ): Promise<Coordinates> => {
+    try {
+      let addressQuerystring = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address
+      )}&key=${googleMapAPIKey}`;
+      let { data } = await axios.get(addressQuerystring);
+      console.log(data);
+      let coordinates = data.results[0].geometry.location;
       return {
         latitude: coordinates.lat,
         longitude: coordinates.lon,
@@ -100,17 +180,21 @@ export default class GeoLocationValidator {
     let distance = this.radiusOfEarth * c;
     return distance; // distance in meters
   };
-
+  /**
+   * Converts degrees to radians
+   * @param deg
+   * @returns
+   */
   degree2Radian = (deg: number): number => {
     return deg * (Math.PI / 180);
   };
 
   /**
-   * Validation Method to
-   * @param userCoordinates
-   * @param validationPoint
-   * @param range
-   * @returns True or false
+   * Validation Method to check location of device
+   * @param userCoordinates -  Geographic coordinates of device
+   * @param validationPoint -  Geographic coordinates of validation point
+   * @param range - Acceptable distance between the device and validation point in meters
+   * @returns  Validation message True or false
    */
   validateLocation = async (
     userCoordinates: Coordinates,
