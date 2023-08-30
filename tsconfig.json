@@ -108,7 +108,7 @@
   },
   "exclude": ["tests"],
   "typedocOptions": {
-    "entryPoints": ["src/index.ts"],
+    "entryPoints": ["src"],
     "out": "docs"
   }
 }

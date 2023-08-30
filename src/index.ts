@@ -7,14 +7,18 @@ import {
   ValidationMessage,
 } from './interfaces';
 
+export { Coordinates, FetchCoordinatesResult, ValidationMessage };
+
 /**
  * A geolocation validation middleware to based on Ip address
  */
 export class GeoLocationValidator {
-  private radiusOfEarth = 6371000; //meters
+  /** Radius of the earth in meters */
+  radiusOfEarth = 6371000; //meters
   /**
    * A geolocation validation middleware to based on Ip address
    */
+
   /**
    * Fetches the geographic coordinates of device based on Ip
    * @param ipDataAPIKey - Check out https://ipdata.co/
@@ -52,7 +56,10 @@ export class GeoLocationValidator {
    * @param ipDataAPIKey -  Check out https://ipdata.co/
    * @returns - Geographic coordinates of device based on http request to be validated on backend application
    */
-  fetchIpBasedReq = async (req: express.Request, ipDataAPIKey: string) => {
+  fetchIpBasedReq = async (
+    req: express.Request,
+    ipDataAPIKey: string
+  ): Promise<Coordinates> => {
     try {
       const ipAddress = req.socket.remoteAddress;
       const ipData = new IPData(ipDataAPIKey);
@@ -63,7 +70,9 @@ export class GeoLocationValidator {
         latitude,
         longitude,
       };
-    } catch (error: any) {}
+    } catch (error: any) {
+      throw error.message;
+    }
   };
 
   /**
