@@ -57,7 +57,7 @@ export class GeoLocationValidator {
    * @returns - Geographic coordinates of device based on http request to be validated on backend application
    */
   fetchIpBasedReq = async (
-    req: express.Request,
+    req: any,
     ipDataAPIKey: string
   ): Promise<Coordinates> => {
     try {
