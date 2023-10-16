@@ -76,5 +76,10 @@ describe('Geolocation Validator suite', () => {
       console.log(validationResult);
       assert(validationResult);
     });
+    it('Use Html5', async () => {
+      const geoLocator = new GeoLocationValidator();
+      let deviceLocation = geoLocator.fetchCoordinatesHtml5Geolocation();
+      let { latitude, logitude } = deviceLocation;
+    });
   });
 });

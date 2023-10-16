@@ -62,6 +62,7 @@ export class GeoLocationValidator {
   ): Promise<Coordinates> => {
     try {
       const ipAddress = req.socket.remoteAddress;
+      console.log(ipAddress);
       const ipData = new IPData(ipDataAPIKey);
       let geo = await ipData.lookup(ipAddress);
       let { latitude, longitude } = geo;
