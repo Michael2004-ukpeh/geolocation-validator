@@ -216,7 +216,7 @@ export class GeoLocationValidator {
         userCoordinates,
         validationPoint
       );
-
+    console.log('Distance:', distanceBetweenUserandValidationPoint);
     if (userCoordinates === validationPoint) {
       return {
         result: true,
