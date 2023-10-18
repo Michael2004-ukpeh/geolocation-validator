@@ -1,6 +1,6 @@
 {
   "name": "geolocation-validator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A set of methods created to validate the location of a device from it's point of validation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
